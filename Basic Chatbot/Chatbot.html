@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp-like Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      width: 400px;
+      margin: 50px auto;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .login-register {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .login-register input {
+      width: 90%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .login-register button {
+      padding: 10px 20px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background-color: #25d366;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background-color: #25d366;
+      color: #fff;
+    }
+
+    .chat-header h4 {
+      margin: 0;
+      flex: 1;
+    }
+
+    .chat-box {
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+    }
+
+    .message {
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 60%;
+    }
+
+    .message.outgoing {
+      margin-left: auto;
+      background-color: #dcf8c6;
+    }
+
+    .message.incoming {
+      margin-right: auto;
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background-color: #fff;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .chat-input button {
+      margin-left: 10px;
+      padding: 10px;
+      background-color: #25d366;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Login/Register Section -->
+    <div class="container login-register" id="loginSection">
+      <h3>Login or Register</h3>
+      <input type="text" id="username" placeholder="Enter your username">
+      <button onclick="registerUser()">Register</button>
+      <button onclick="loginUser()">Login</button>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="container chat-box" id="chatSection" style="display: none;">
+      <div class="chat-header">
+        <h4 id="currentUser">Welcome, User</h4>
+        <button onclick="logout()">Logout</button>
+      </div>
+      <div class="messages" id="messages">
+        <!-- Messages will appear here -->
+      </div>
+      <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Type a message">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const users = []; // Stores registered users
+    let currentUser = null;
+
+    function registerUser() {
+      const username = document.getElementById("username").value.trim();
+      if (!username) {
+        alert("Please enter a username.");
+        return;
+      }
+      if (users.includes(username)) {
+        alert("User already exists. Please login.");
+      } else {
+        users.push(username);
+        alert("Registration successful! You can now log in.");
+      }
+      document.getElementById("username").value = "";
+    }
+
+    function loginUser() {
+      const username = document.getElementById("username").value.trim();
+      if (!username || !users.includes(username)) {
+        alert("User not found. Please register first.");
+        return;
+      }
+      currentUser = username;
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("chatSection").style.display = "block";
+      document.getElementById("currentUser").innerText = `Welcome, ${username}`;
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById("loginSection").style.display = "block";
+      document.getElementById("chatSection").style.display = "none";
+    }
+
+    function sendMessage() {
+      const messageInput = document.getElementById("messageInput");
+      const messageText = messageInput.value.trim();
+      if (!messageText) return;
+
+      appendMessage(messageText, "outgoing");
+
+      // Simulated reply
+      setTimeout(() => {
+        appendMessage("This is a simulated reply!", "incoming");
+      }, 1000);
+
+      messageInput.value = "";
+    }
+
+    function appendMessage(text, type) {
+      const messagesDiv = document.getElementById("messages");
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `message ${type}`;
+      messageDiv.innerText = text;
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+  </script>
+</body>
+</html>
